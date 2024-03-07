@@ -68,6 +68,21 @@ int main() {
 
 	cout << "at(2)" << endl;
 	cout << b.at(2) << endl;
+
+	myvector<int> c(b);
+	myvector<int> d = {1, 2, 3};
+	
+	cout << "c == b" << endl;
+	const bool ok = c == b;
+	cout << ok << endl;
+
+	cout << "c != b" << endl;
+	const bool ok2 = c != b;
+	cout << ok2 << endl;
+
+	cout << "d != b" << endl;
+	const bool ok3 = d != b;
+	cout << ok3 << endl;
 	
 
 	return 0;

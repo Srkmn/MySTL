@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <assert.h>
-#include "MyAllocator.h"
 
 using namespace std;
 enum reserve_type
@@ -101,8 +100,8 @@ public:
 		while (it <= last) 
 		{
 			*element = *it;
-			element++;
-			it++;
+			++element;
+			++it;
 		}
 		_end = element;
 		_endstroage = _start + v_sz - 1;
@@ -323,12 +322,55 @@ public:
 	*  override
 	*/
 
-	bool operator == (const myvector<value_type>& v)
+	constexpr bool operator==(const myvector<value_type>& rht) const
 	{
-		return v._start == _start;
+		if (size() == 0 || size() != rht.size())
+		{
+			return false;
+		}
+
+		const_iterator lt = const_begin();
+		const_iterator rt = rht.const_begin();
+
+		while (lt != const_end())
+		{
+			if (*lt != *rt)
+			{
+				return false;
+			}
+
+			++lt;
+			++rt;
+		}
+
+		return true;
+	}
+
+	bool operator != (const myvector<value_type>& rht) const
+	{
+		if (size() == 0 || size() != rht.size())
+		{
+			return true;
+		}
+
+		const_iterator lt = const_begin();
+		const_iterator rt = rht.const_begin();
+
+		while (lt != const_end())
+		{
+			if (*lt != *rt)
+			{
+				return true;
+			}
+
+			++lt;
+			++rt;
+		}
+
+		return false;
 	}
 	
-	myvector<value_type>& operator = (const myvector<value_type>& v) 
+	myvector& operator = (const myvector<value_type>& v) 
 	{ 
 		//To overload "=" here, it is necessary to first determine whether it is a self assignment, 
 		// and then perform copy self swapping, so as to release excess memory in parallel.
@@ -343,7 +385,7 @@ public:
 		return *this;
 	}
 
-	myvector<value_type>& operator = (myvector<value_type>&& v) noexcept
+	myvector& operator = (myvector<value_type>&& v) noexcept
 	{
 		// move-assignment
 
