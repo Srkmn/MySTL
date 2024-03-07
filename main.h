@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "Vector.h"
 using namespace std;
 
@@ -10,7 +11,6 @@ int main() {
 		cin >> arr[i];
 	}
 	*/
-
 
 	myvector<int> a = {1,2 , 3, 4, 5, 6, 7, 8,9};
 	myvector<int> b(a);

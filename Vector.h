@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <assert.h>
+#include "MyAllocator.h"
 
 using namespace std;
 enum reserve_type
@@ -13,13 +14,13 @@ enum reserve_type
 	HIGH
 };
 
-template<typename T, reserve_type retype = reserve_type::NORMAL>
+template<typename _T, typename _Alloc = std::allocator<_T>, reserve_type retype = reserve_type::NORMAL>
 class myvector
 {
 	// Define basic member variables
 public:
 	// Define data types, iterators, and references
-	typedef T value_type;
+	typedef _T value_type;
 	typedef value_type* iterator;
 	typedef const value_type* const_iterator;
 	typedef value_type& reference;
@@ -43,15 +44,21 @@ public:
 	myvector(const myvector<value_type>& v) // copy constructor
 	{ 
 		size_t v_sz = v.size();
-		_start = new value_type[v_sz];
+		_start = _Alloc().allocate(v_sz);
+		//_start = new value_type[v_sz];
 		copy(v.const_begin(), v.const_end(), std::begin(*this));
 		_end = _start + v_sz;
 		_endstroage = v_sz + _start;
 	}
 
-	myvector(const std::initializer_list<value_type>& v) // Overload initialization list constructor  
+	myvector(const std::initializer_list<value_type>& v)  // Overload initialization list constructor  
 	{
 		cout << "using initialization list constructor" << endl;
+
+		/*for (auto it:value_type:v)
+		{
+			push_back(*it);
+		}*/
 
 		for (auto it = v.begin(); it!=v.end(); it++)
 		{
@@ -79,7 +86,8 @@ public:
 		last = max(inter_it, last);
 
 		size_t v_sz = last - first + 1;
-		_start = new value_type[v_sz];
+		_start = _Alloc().allocate(v_sz);
+		//_start = new value_type[v_sz];
 		iterator it = first;
 		iterator element = _start;
 		while (it <= last) 
@@ -94,7 +102,8 @@ public:
 
 	myvector(size_t n, const value_type& value = value_type()) // Initial constructor with default values
 	{  
-		_start = new value_type[n];
+		_start = _Alloc().allocate(n);
+		//_start = new value_type[n];
 		for (int i = 0; i < n; i++) 
 		{
 			*(_start + i) = value;
@@ -107,7 +116,8 @@ public:
 	{ 
 		if (_start) 
 		{
-			delete[] _start;
+			_Alloc().deallocate(_start, sizeof(_start));
+			// delete[] _start;
 			_start = _end = _endstroage = nullptr;
 		}
 	}
@@ -147,7 +157,7 @@ public:
 		{
 			reserve();
 		}
-		*end() = value;
+		*_end = value;
 		++_end;
 	}
 
@@ -202,6 +212,11 @@ public:
 	iterator emplace(iterator pos1, const value_type& val)
 	{
 		return insert(pos1 - 1, val);
+	}
+
+	iterator emplace_back(const value_type& val)
+	{
+		return push_back(val);
 	}
 
 	iterator find(const value_type& val)  // Found output iterator, unable to find output    _end
@@ -355,15 +370,19 @@ private:
 				break;
 		}
 
-		value_type* temp = new value_type[capacity_new];
+		iterator temp = _Alloc().allocate(capacity_new);
+		//iterator temp = new value_type[capacity_new];
 		if (begin() != nullptr)
 		{
 			memcpy(temp, begin(), sizeof(value_type) * sz);
-			delete[] begin();
+			_Alloc().deallocate(_start, sz);
+			//delete[] begin();
 		}
+
 		_start = temp;
 		_end = temp + sz;
 		_endstroage = begin() + capacity_new;
+
 	}
 	
 	// Delete specified interval
