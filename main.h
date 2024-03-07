@@ -59,6 +59,15 @@ int main() {
 
 	b.reverse(b.begin(), b.end() - 1);
 	cout << b << endl;
+
+	cout << "front():" << endl;
+	cout << b.front() << endl;
+
+	cout << "back():" << endl;
+	cout << b.back() << endl;
+
+	cout << "at(2)" << endl;
+	cout << b.at(2) << endl;
 	
 
 	return 0;

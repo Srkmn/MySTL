@@ -35,13 +35,15 @@ private:
 
 public:
 
-	myvector() // Default constructor
+	// Default constructor
+	myvector() 
 		:_start(nullptr)
 		, _end(nullptr)
 		, _endstroage(nullptr)
 	{}
 
-	myvector(const myvector<value_type>& v) // copy constructor
+	// copy constructor
+	myvector(const myvector<value_type>& v) 
 	{ 
 		size_t v_sz = v.size();
 		_start = _Alloc().allocate(v_sz);
@@ -51,7 +53,11 @@ public:
 		_endstroage = v_sz + _start;
 	}
 
-	myvector(const std::initializer_list<value_type>& v)  // Overload initialization list constructor  
+	// Overload initialization list constructor  
+	myvector(const std::initializer_list<value_type>& v)  
+		:_start(nullptr)
+		, _end(nullptr)
+		, _endstroage(nullptr)
 	{
 		cout << "using initialization list constructor" << endl;
 
@@ -67,7 +73,8 @@ public:
 
 	}
 
-	myvector(myvector<value_type>&& v)  // move-constructor
+	// move-constructor
+	myvector(myvector<value_type>&& v)  
 		:_start(v._start)
 		, _end(v._end)
 		, _endstroage(v._endstroage)
@@ -79,7 +86,8 @@ public:
 		v._endstroage = nullptr;
 	}
 
-	myvector(iterator first, iterator last)  // Sequence initialization construction
+	// Sequence initialization construction
+	myvector(iterator first, iterator last)  
 	{
 		iterator inter_it = first;
 		first = min(first, last);
@@ -100,7 +108,8 @@ public:
 		_endstroage = _start + v_sz - 1;
 	}
 
-	myvector(size_t n, const value_type& value = value_type()) // Initial constructor with default values
+	// Initial constructor with default values
+	myvector(size_t n, const value_type& value = value_type()) 
 	{  
 		_start = _Alloc().allocate(n);
 		//_start = new value_type[n];
@@ -151,6 +160,18 @@ public:
 	}
 
 	// crud
+	const reference front() const
+	{
+		assert(size() > 0 && _start);
+		return *_start;
+	}
+
+	const reference back() const
+	{
+		assert(size() > 0 && _start);
+		return *(_end - 1);
+	}
+
 	void push_back(const value_type& value) 
 	{
 		if (_end == _endstroage) 
@@ -167,17 +188,21 @@ public:
 		iterator ret = rel_erase(_end - 1);
 	}
 
-	iterator erase(iterator pos1, iterator pos2 = pos1)  // Delete two iterators and their intermediate elements
+	// Delete two iterators and their intermediate elements
+	iterator erase(iterator pos1, iterator pos2 = pos1)  
 	{
 		return rel_erase(pos1, pos2);
 	}
 
-	iterator erase(iterator pos1, size_t n)  // Delete n elements starting from pos1
+	// Delete n elements starting from pos1
+	iterator erase(iterator pos1, size_t n)  
 	{
 		return rel_erase(pos1, pos1 + n - 1);
 	}
 
-	void erase(size_t, size_t) = delete;  // Prevent the first parameter from being converted to iterator from 0, C++history issue, where 0 and NULL are equivalent
+	// Prevent the first parameter from being converted to iterator from 0, 
+	// C++history issue, where 0 and NULL are equivalent
+	void erase(size_t, size_t) = delete;  
 
 	iterator insert(iterator pos1, const value_type& val) 
 	{
@@ -219,7 +244,8 @@ public:
 		return push_back(val);
 	}
 
-	iterator find(const value_type& val)  // Found output iterator, unable to find output    _end
+	// Found output iterator, unable to find output    _end
+	iterator find(const value_type& val)  
 	{
 		iterator it = begin();
 		while (it != end())
@@ -231,7 +257,15 @@ public:
 		return end();
 	}
 
-	inline bool IsValidIndex(size_t index) const // Check if the index exists
+	// Find and return a reference to an element
+	reference at(size_t val)
+	{
+		assert(val < size());
+		return (*this)[val];
+	}
+
+	// Check if the index exists
+	inline bool IsValidIndex(size_t index) const 
 	{
 		return size() > index;
 	}
@@ -251,20 +285,23 @@ public:
 		}
 	}
 
-	void shrink_to_fit()   // Clean memory
+	// Clear memory
+	void shrink_to_fit()   
 	{
 		const myvector<value_type>& temp(*this);
 		swap(temp);
 	}
 
-	void swap(myvector<value_type> v) noexcept // Replace vector
+	// Replace vector
+	void swap(myvector<value_type> v) noexcept 
 	{  
 		std::swap(_start, v._start);
 		std::swap(_end, v._end);
 		std::swap(_endstroage, v._endstroage);
 	} 
 	
-	void reverse(iterator first, iterator last)  // Reverse elements between two iterators
+	// Reverse elements between two iterators
+	void reverse(iterator first, iterator last) 
 	{
 		if (size() <= 1) return;
 
