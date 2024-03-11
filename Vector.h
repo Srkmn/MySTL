@@ -4,6 +4,7 @@
 #include <iostream>
 #include <assert.h>
 
+// 6666666
 using namespace std;
 enum reserve_type
 {
