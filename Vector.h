@@ -4,7 +4,7 @@
 #include <iostream>
 #include <assert.h>
 
-// 222222
+// 22222
 using namespace std;
 enum reserve_type
 {
